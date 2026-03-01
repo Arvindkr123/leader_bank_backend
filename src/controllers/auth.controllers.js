@@ -1,4 +1,4 @@
-import sendRegistrationEmail from '../services/email.services.js';
+// import sendRegistrationEmail from '../services/email.services.js';
 import UserModel from './../models/user.models.js';
 import jwt from 'jsonwebtoken';
 export async function userRegisterController(req, res) {
@@ -33,7 +33,7 @@ export async function userRegisterController(req, res) {
                 name: newUser.name
             }
         });
-        await sendRegistrationEmail(newUser.email, newUser.name);
+        // await sendRegistrationEmail(newUser.email, newUser.name);
     } catch (error) {
         console.error("Error in user registration:", error);
         res.status(500).json({
