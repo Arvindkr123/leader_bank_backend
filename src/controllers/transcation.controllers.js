@@ -91,7 +91,7 @@ export async function createTranscation(req, res) {
         session.startTransaction();
 
         const transcation = new TranscationModel({
-            fromAccount,
+            fromAccount:fromUserAccount._id,
             toAccount,
             amount,
             idempotencyKey,
@@ -99,15 +99,15 @@ export async function createTranscation(req, res) {
         })
 
         const debitLedgerEntry = await LedgerModel.create([{
-            account: fromAccount,
+            account: fromUserAccount._id,
             amount,
-            transcation: transcation._id,
+            transaction: transcation._id,
             type: 'DEBIT'
         }], { session })
         const creditLedgerEntry = await LedgerModel.create([{
-            account: toAccount,
+            account: toUserAccount._id,
             amount,
-            transcation: transcation._id,
+            transaction: transcation._id,
             type: 'CREDIT'
         }], { session })
 
@@ -124,6 +124,7 @@ export async function createTranscation(req, res) {
             idempotencyKey: idempotencyKey
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -167,7 +168,7 @@ export async function createSystemUserInitialFundsController(req, res) {
                 status: "PENDING"
             }
         );
-        const debitLedgerEntery = await LedgerModel.create([{
+        const debitLedgerEntry = await LedgerModel.create([{
             account: fromUserAccount._id,
             amount: amount,
             transaction: transcation._id,  
